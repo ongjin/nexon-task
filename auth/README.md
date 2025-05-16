@@ -32,7 +32,7 @@ npm install
 
 ```env
 MONGODB_URI=mongodb://localhost:27017/auth
-JWT_SECRET=857A9E6A28D951AA72F5368AB468FB8F29AA27F1A2387479D26C2BB708587029
+JWT_SECRET=jwt-secret
 JWT_EXPIRES_IN=3600s
 ```
 
@@ -42,6 +42,9 @@ JWT_EXPIRES_IN=3600s
 npm run start:dev
 # 또는
 npm run start
+
+# 임시 admin 토큰 발행 (admin@nexon.com 가입 후 진행)
+node -e "console.log(require('jsonwebtoken').sign({ sub: '계정_ID', email: 'admin@nexon.com', role: ['ADMIN'] }, 'jwt-secret'))"
 ```
 
 - 기본 포트: `3001`
@@ -50,11 +53,11 @@ npm run start
 
 ## 환경 변수
 
-| 이름             | 설명                        | 예시                                                               |
-| ---------------- | --------------------------- | ------------------------------------------------------------------ |
-| `MONGODB_URI`    | MongoDB 연결 문자열         | `mongodb://localhost:27017/auth`                                   |
-| `JWT_SECRET`     | JWT 서명 비밀 키            | `857A9E6A28D951AA72F5368AB468FB8F29AA27F1A2387479D26C2BB708587029` |
-| `JWT_EXPIRES_IN` | JWT 만료 시간 (Nest config) | `3600s`, `1h`, `7d`                                                |
+| 이름             | 설명                        | 예시                             |
+| ---------------- | --------------------------- | -------------------------------- |
+| `MONGODB_URI`    | MongoDB 연결 문자열         | `mongodb://localhost:27017/auth` |
+| `JWT_SECRET`     | JWT 서명 비밀 키            | `jwt-secret`                     |
+| `JWT_EXPIRES_IN` | JWT 만료 시간 (Nest config) | `3600s`, `1h`, `7d`              |
 
 ---
 
