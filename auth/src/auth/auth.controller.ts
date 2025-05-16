@@ -7,6 +7,7 @@ import { RolesGuard } from './roles.guard';
 import { Roles } from './roles.decorator';
 import { ChangeRolesDto } from './dto/change-roles.dto';
 import { UsersService } from '../users/users.service';
+import { Role } from './role.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -37,7 +38,7 @@ export class AuthController {
 
     // ADMIN만 접근 가능: 전체 유저 조회
     @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles('ADMIN')
+    @Roles(Role.ADMIN)
     @Get('users')
     getAllUsers() {
         return this.usersService.findAll();
@@ -45,7 +46,7 @@ export class AuthController {
 
     // ADMIN만 접근 가능: 역할 변경
     @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles('ADMIN')
+    @Roles(Role.ADMIN)
     @Patch('users/:id/roles')
     changeUserRoles(
         @Param('id') id: string,
