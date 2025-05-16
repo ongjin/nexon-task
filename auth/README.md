@@ -193,17 +193,21 @@ src/
 ├─ auth/
 │  ├ dto/          # Register/Login/ChangeRoles DTOs
 │  ├ auth.controller.ts
+│  ├ auth.module.ts
 │  ├ auth.service.ts
 │  ├ jwt.strategy.ts
-│  ├ roles.guard.ts
-│  └ roles.decorator.ts
-├─ users/
-│  ├ schemas/      # Mongoose schema
-│  ├ users.service.ts
-│  └ users.module.ts
+│  ├ role.enum.ts
+│  ├ roles.decorator.ts
+│  └ roles.guard.ts
 ├─ common/
 │  ├ filters/
-│  └ interceptors/
+│  ├ interceptors/
+│  ├ middleware/
+│  └ utils/
+├─ users/
+│  ├ schemas/      # Mongoose schema
+│  ├ users.module.ts
+│  └ users.service.ts
 └─ main.ts
 ```
 
