@@ -24,6 +24,12 @@ export class Reward {
 
     @Prop({ type: Object, default: {} })
     metadata: Record<string, any>;  // itemId, couponCode 등
+
+    @Prop({ required: true })
+    createdBy: string;
+
+    @Prop({ required: true })
+    updatedBy: string;
 }
 
 export const RewardSchema = SchemaFactory.createForClass(Reward);

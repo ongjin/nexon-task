@@ -46,10 +46,7 @@ export class RewardRequestController {
     /** OPERATOR/ADMIN: 요청 상태(success/fail) 업데이트 */
     @Patch('reward-requests/:id/status')
     @Roles(Role.OPERATOR, Role.ADMIN)
-    updateStatus(
-        @Param('id') id: string,
-        @Body() dto: UpdateRewardRequestStatusDto,
-    ) {
-        return this.reqService.updateStatus(id, dto);
+    updateStatus(@Param('id') id: string, @Body() dto: UpdateRewardRequestStatusDto, @Request() req) {
+        return this.reqService.updateStatus(id, dto, req.user.userId);
     }
 }

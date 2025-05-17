@@ -14,12 +14,13 @@ export class InventoryController {
     // OPERATOR, ADMIN: 유저에 아이템/포인트 지급
     @Post()
     @Roles(Role.OPERATOR, Role.ADMIN)
-    addItem(@Body() dto: CreateInventoryDto) {
+    addItem(@Body() dto: CreateInventoryDto, @Request() req) {
         return this.invService.addItem(
             dto.userId,
             dto.itemId,
             dto.quantity,
             dto.metadata || {},
+            req.user.userId
         );
     }
 

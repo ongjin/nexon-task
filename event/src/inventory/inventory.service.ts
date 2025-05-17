@@ -10,12 +10,7 @@ export class InventoryService {
     ) { }
 
     /** 아이템/포인트 지급 */
-    async addItem(
-        userId: string,
-        itemId: string,
-        quantity: number,
-        metadata: Record<string, any> = {},
-    ): Promise<Inventory> {
+    async addItem(userId: string, itemId: string, quantity: number, metadata: Record<string, any> = {}, adminId: string): Promise<Inventory> {
         if (!Types.ObjectId.isValid(userId)) {
             throw new NotFoundException('Invalid user ID');
         }
@@ -25,6 +20,8 @@ export class InventoryService {
             quantity,
             metadata,
             grantedAt: new Date(),
+            createdBy: adminId,
+            updatedBy: adminId
         });
         return inv.save();
     }

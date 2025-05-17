@@ -1,13 +1,4 @@
-import {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Param,
-    Patch,
-    Delete,
-    UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards, Request } from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -24,8 +15,13 @@ export class EventController {
     // 이벤트 생성 (OPERATOR, ADMIN)
     @Post()
     @Roles(Role.OPERATOR, Role.ADMIN)
-    create(@Body() dto: CreateEventDto) {
-        return this.eventService.create(dto);
+    create(@Body() dto: CreateEventDto, @Request() req) {
+        const eventData = {
+            ...dto,
+            createdBy: req.user.userId,
+            updatedBy: req.user.userId,
+        }
+        return this.eventService.create(eventData);
     }
 
     // 리스트 조회 (모든 인증된 사용자)
@@ -45,8 +41,12 @@ export class EventController {
     // 수정 (OPERATOR, ADMIN)
     @Patch(':id')
     @Roles(Role.OPERATOR, Role.ADMIN)
-    update(@Param('id') id: string, @Body() dto: UpdateEventDto) {
-        return this.eventService.update(id, dto);
+    update(@Param('id') id: string, @Body() dto: UpdateEventDto, @Request() req) {
+        const eventData = {
+            ...dto,
+            updatedBy: req.user.userId,
+        }
+        return this.eventService.update(id, eventData);
     }
 
     // 삭제 (OPERATOR, ADMIN)

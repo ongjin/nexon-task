@@ -20,6 +20,12 @@ export class Inventory {
 
     @Prop({ default: () => new Date() })
     grantedAt: Date;
+
+    @Prop({ required: true })
+    createdBy: string;
+
+    @Prop({ required: true })
+    updatedBy: string;
 }
 
 export const InventorySchema = SchemaFactory.createForClass(Inventory);

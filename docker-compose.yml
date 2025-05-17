@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
     mongodb:
         image: mongo:5.0
@@ -6,3 +7,49 @@ services:
             - "27017:27017"
         volumes:
             - ./mongo_data:/data/db
+        container_name: mongodb
+
+    gateway:
+        build:
+            context: ./gateway
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
+        env_file:
+            - ./gateway/.env.docker
+        depends_on:
+            - auth
+            - event
+        container_name: gateway
+
+    auth:
+        build:
+            context: ./auth
+            dockerfile: Dockerfile
+        ports:
+            - "3001" # 내부용
+        env_file:
+            - ./auth/.env.docker
+        environment:
+            MONGODB_URI: mongodb://mongodb:27017/auth-db
+            JWT_SECRET: your_jwt_secret
+        depends_on:
+            - mongodb
+        container_name: auth
+
+    event:
+        build:
+            context: ./event
+            dockerfile: Dockerfile
+        ports:
+            - "3002" # 내부용
+        env_file:
+            - ./event/.env.docker
+        environment:
+            MONGODB_URI: mongodb://mongodb:27017/event-db
+        depends_on:
+            - mongodb
+        container_name: event
+
+volumes:
+    mongo_data:

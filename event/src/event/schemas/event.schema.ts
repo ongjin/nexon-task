@@ -27,6 +27,12 @@ export class Event {
 
     @Prop({ type: String, enum: EventStatus, default: EventStatus.INACTIVE })
     status: EventStatus;
+
+    @Prop({ required: true })
+    createdBy: string;
+
+    @Prop({ required: true })
+    updatedBy: string;
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

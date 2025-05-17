@@ -62,10 +62,7 @@ export class RewardRequestService {
     }
 
     /** 요청 상태 변경 */
-    async updateStatus(
-        id: string,
-        dto: UpdateRewardRequestStatusDto,
-    ): Promise<RewardRequest> {
+    async updateStatus(id: string, dto: UpdateRewardRequestStatusDto, adminId: string): Promise<RewardRequest> {
         if (!Types.ObjectId.isValid(id)) {
             throw new NotFoundException('Invalid request ID');
         }
@@ -89,6 +86,7 @@ export class RewardRequestService {
                     rw.metadata.itemId || rw.type,  // 포인트면 type, 아이템이면 itemId
                     rw.quantity,
                     rw.metadata,
+                    adminId
                 );
             }
         }
