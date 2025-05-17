@@ -1,98 +1,214 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Auth Service README
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+이 문서는 **Auth Service**의 설치, 설정, 실행 방법 및 API 명세를 정리한 가이드입니다.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 프로젝트 소개
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **서비스 역할**: 사용자 등록·로그인, JWT 발급·검증, 역할(Role) 기반 인가 수행
+- **기술 스택**: NestJS, TypeScript, MongoDB, Mongoose, Passport.js (JWT), class-validator
+- **구조**:
 
-## Project setup
+  - `UsersModule` (사용자 관리)
+  - `AuthModule` (인증/인가)
+  - `common` (전역 필터, 인터셉터)
+
+---
+
+## 빠른 시작
+
+### 1. 클론 및 설치
 
 ```bash
-$ npm install
+git clone https://github.com/ongjin/nexon-task.git
+cd auth
+npm install
 ```
 
-## Compile and run the project
+### 2. 환경 변수 설정
+
+프로젝트 루트에 `.env` 파일을 생성하고, 다음 값을 설정하세요:
+
+```env
+MONGODB_URI=mongodb://localhost:27017/auth
+JWT_SECRET=jwt-secret
+JWT_EXPIRES_IN=3600s
+```
+
+### 3. 실행
 
 ```bash
-# development
-$ npm run start
+npm run start:dev
+# 또는
+npm run start
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# 임시 admin 토큰 발행 (admin@nexon.com 가입 후 진행)
+node -e "console.log(require('jsonwebtoken').sign({ sub: '계정_ID', email: 'admin@nexon.com', role: ['ADMIN'] }, 'jwt-secret'))"
 ```
 
-## Run tests
+- 기본 포트: `3001`
 
-```bash
-# unit tests
-$ npm run test
+---
 
-# e2e tests
-$ npm run test:e2e
+## 환경 변수
 
-# test coverage
-$ npm run test:cov
+| 이름             | 설명                        | 예시                             |
+| ---------------- | --------------------------- | -------------------------------- |
+| `MONGODB_URI`    | MongoDB 연결 문자열         | `mongodb://localhost:27017/auth` |
+| `JWT_SECRET`     | JWT 서명 비밀 키            | `jwt-secret`                     |
+| `JWT_EXPIRES_IN` | JWT 만료 시간 (Nest config) | `3600s`, `1h`, `7d`              |
+
+---
+
+## API 명세
+
+### 공통 응답 포맷
+
+모든 응답은 다음 구조를 따릅니다:
+
+```json
+{
+  "code": 200,
+  "message": "SUCCESS",
+  "data": { ... },
+  "timestamp": "2025-05-14T07:00:00.000Z",
+  "path": "/auth/..."
+}
 ```
 
-## Deployment
+### 1. 회원가입 (Register)
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- **Method**: `POST`
+- **Endpoint**: `/auth/register`
+- **Auth**: Public
+- **Body**:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+  ```json
+  { "email": "user@example.com", "password": "password123" }
+  ```
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+- **Response**:
+
+  ```json
+  { "data": { "access_token": "<JWT>" } }
+  ```
+
+### 2. 로그인 (Login)
+
+- **Method**: `POST`
+- **Endpoint**: `/auth/login`
+- **Auth**: Public
+- **Body**:
+
+  ```json
+  { "email": "user@example.com", "password": "password123" }
+  ```
+
+- **Response**:
+
+  ```json
+  { "data": { "access_token": "<JWT>" } }
+  ```
+
+### 3. 프로필 조회 (Get Profile)
+
+- **Method**: `GET`
+- **Endpoint**: `/auth/profile`
+- **Auth**: Bearer JWT
+- **Headers**:
+
+  ```
+  Authorization: Bearer <token>
+  ```
+
+- **Response**:
+
+  ```json
+  { "data": { "userId": "...", "roles": ["USER"] } }
+  ```
+
+### 4. 전체 사용자 조회 (Get All Users)
+
+- **Method**: `GET`
+- **Endpoint**: `/auth/users`
+- **Auth**: Bearer JWT + `ADMIN` 권한
+- **Response**:
+
+  ```json
+  { "data": [ { "id": "...", "email": "...", "roles": ["..."], ... } ] }
+  ```
+
+### 5. 역할 변경 (Change User Roles)
+
+- **Method**: `PATCH`
+- **Endpoint**: `/auth/users/:id/roles`
+- **Auth**: Bearer JWT + `ADMIN`
+- **Body**:
+
+  ```json
+  { "roles": ["USER", "ADMIN"] }
+  ```
+
+- **Response**:
+
+  ```json
+  { "data": { "id": "...", "roles": ["USER","ADMIN"], ... } }
+  ```
+
+---
+
+## 추가 설정
+
+- **ValidationPipe 옵션**:
+
+  ```ts
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
+  ```
+
+- **예외 필터 / 인터셉터**는 `AppModule`의 `providers`에 등록되어 있습니다.
+
+---
+
+## 테스트
+
+- **Unit Test**: Jest + Supertest (옵션)
+- 테스트 실행:
+
+  ```bash
+  npm run test
+  ```
+
+---
+
+## 구조
+
+```
+src/
+├─ auth/
+│  ├ dto/          # Register/Login/ChangeRoles DTOs
+│  ├ auth.controller.ts
+│  ├ auth.module.ts
+│  ├ auth.service.ts
+│  ├ jwt.strategy.ts
+│  ├ role.enum.ts
+│  ├ roles.decorator.ts
+│  └ roles.guard.ts
+├─ common/
+│  ├ filters/
+│  ├ interceptors/
+│  ├ middleware/
+│  └ utils/
+├─ users/
+│  ├ schemas/      # Mongoose schema
+│  ├ users.module.ts
+│  └ users.service.ts
+└─ main.ts
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
