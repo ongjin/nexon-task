@@ -1,98 +1,173 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Event Service README
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+이 문서는 **Event**의 설치, 설정, 실행 방법 및 API 명세를 정리한 가이드입니다.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 프로젝트 소개
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **서비스 역할**: 이벤트 관리, 보상(Reward) 등록/조회/수정/삭제, 보상 요청 상태 관리, 인벤토리 연동
+- **기술 스택**: NestJS, TypeScript, MongoDB, Mongoose, Passport.js (JWT), class-validator, winston
+- **모듈 구성**:
 
-## Project setup
+  - `EventModule` - 이벤트 CRUD
+  - `RewardModule` - 이벤트 연관 보상 관리
+  - `RewardRequestModule` - 사용자 보상 요청 처리
+  - `InventoryModule` - 인벤토리(아이템/포인트) 관리
+  - `common` - 필터, 인터셉터, 미들웨어
+
+---
+
+## 🚀 빠른 시작
+
+### 1. 클론 및 설치
 
 ```bash
-$ npm install
+git clone https://github.com/ongjin/nexon-task.git
+cd event
+npm install
 ```
 
-## Compile and run the project
+### 2. 환경 변수 설정
+
+프로젝트 루트에 `.env` 파일을 생성하고, 다음 값을 설정하세요:
+
+```env
+MONGODB_URI=mongodb://localhost:27017/event
+JWT_SECRET=yourSecretKey
+JWT_EXPIRES_IN=3600s
+```
+
+### 3. 실행
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start:dev
+# 또는
+npm run start
 ```
 
-## Run tests
+- 기본 포트: `3002`
 
-```bash
-# unit tests
-$ npm run test
+---
 
-# e2e tests
-$ npm run test:e2e
+## 환경 변수
 
-# test coverage
-$ npm run test:cov
+| 이름             | 설명                | 예시                              |
+| ---------------- | ------------------- | --------------------------------- |
+| `MONGODB_URI`    | MongoDB 연결 문자열 | `mongodb://localhost:27017/event` |
+| `JWT_SECRET`     | JWT 서명 비밀 키    | `yourSecretKey`                   |
+| `JWT_EXPIRES_IN` | JWT 만료 시간       | `3600s`, `1h`, `7d`               |
+
+---
+
+## API 명세
+
+모든 엔드포인트는 JWT 인증(`Authorization: Bearer <token>`)과 응답 포맷을 동일하게 사용합니다.
+
+```json
+{
+  "code": 200,
+  "message": "SUCCESS",
+  "data": ...,
+  "timestamp": "2025-05-14Txx:xx:xx.xxxZ",
+  "path": "/..."
+}
 ```
 
-## Deployment
+### 1. EventModule (이벤트 관리)
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+| Method | Endpoint     | 권한                           | 설명             |
+| ------ | ------------ | ------------------------------ | ---------------- |
+| POST   | /events      | OPERATOR, ADMIN                | 이벤트 생성      |
+| GET    | /events      | USER, OPERATOR, AUDITOR, ADMIN | 이벤트 목록 조회 |
+| GET    | /events/\:id | USER, OPERATOR, AUDITOR, ADMIN | 이벤트 상세 조회 |
+| PATCH  | /events/\:id | OPERATOR, ADMIN                | 이벤트 수정      |
+| DELETE | /events/\:id | OPERATOR, ADMIN                | 이벤트 삭제      |
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 2. RewardModule (보상 관리)
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+| Method | Endpoint                       | 권한                           | 설명           |
+| ------ | ------------------------------ | ------------------------------ | -------------- |
+| POST   | /events/\:eventId/rewards      | OPERATOR, ADMIN                | 보상 등록      |
+| GET    | /events/\:eventId/rewards      | USER, OPERATOR, AUDITOR, ADMIN | 보상 목록 조회 |
+| GET    | /events/\:eventId/rewards/\:id | USER, OPERATOR, AUDITOR, ADMIN | 보상 상세 조회 |
+| PATCH  | /events/\:eventId/rewards/\:id | OPERATOR, ADMIN                | 보상 수정      |
+| DELETE | /events/\:eventId/rewards/\:id | OPERATOR, ADMIN                | 보상 삭제      |
+
+### 3. RewardRequestModule (보상 요청)
+
+| Method | Endpoint                     | 권한                     | 설명                                      |
+| ------ | ---------------------------- | ------------------------ | ----------------------------------------- |
+| POST   | /reward-requests             | USER                     | 보상 요청                                 |
+| GET    | /reward-requests             | USER                     | 본인 요청 내역 조회                       |
+| GET    | /admin/reward-requests       | ADMIN, OPERATOR, AUDITOR | 전체 요청 내역 조회                       |
+| PATCH  | /reward-requests/\:id/status | OPERATOR, ADMIN          | 요청 상태 변경 (SUCCESS 시 인벤토리 적립) |
+
+### 4. InventoryModule (인벤토리 관리)
+
+| Method | Endpoint            | 권한                           | 설명                    |
+| ------ | ------------------- | ------------------------------ | ----------------------- |
+| POST   | /inventory          | OPERATOR, ADMIN                | 아이템/포인트 수동 적립 |
+| GET    | /inventory          | USER, OPERATOR, AUDITOR, ADMIN | 본인 인벤토리 조회      |
+| GET    | /inventory/\:userId | OPERATOR, AUDITOR, ADMIN       | 특정 유저 인벤토리 조회 |
+
+---
+
+## 예외 및 로깅
+
+- **ValidationPipe**: DTO 유효성 검사 (`whitelist`, `forbidNonWhitelisted` 활성화)
+- **HttpExceptionFilter**: 상세 에러 메시지 포맷
+- **LoggerMiddleware**: winston 기반 요청·응답 로그
+
+---
+
+## 디렉터리 구조
+
+```
+src/
+├─ auth/                    # JWT 전략, RolesGuard, decorator
+├─ event/
+│  ├─ schemas/
+│  ├─ dto/
+│  ├─ event.module.ts
+│  ├─ event.service.ts
+│  └─ event.controller.ts
+├─ reward/
+│  ├─ schemas/
+│  ├─ dto/
+│  ├─ reward.module.ts
+│  ├─ reward.service.ts
+│  └─ reward.controller.ts
+├─ reward-request/
+│  ├─ schemas/
+│  ├─ dto/
+│  ├─ reward-request.module.ts
+│  ├─ reward-request.service.ts
+│  └─ reward-request.controller.ts
+├─ inventory/
+│  ├─ schemas/
+│  ├─ dto/
+│  ├─ inventory.module.ts
+│  ├─ inventory.service.ts
+│  └─ inventory.controller.ts
+└─ common/
+   ├─ filters/
+   ├─ interceptors/
+   ├─ middleware/
+   └─ utils/
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 테스트
 
-Check out a few resources that may come in handy when working with NestJS:
+- **Unit Test**: Jest + Supertest 사용 권장
+- **E2E Test**: 전체 플로우(이벤트→보상→요청→적립) 시나리오 검증
+- **테스트 실행**:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+  ```bash
+  npm run test
+  npm run test:e2e
+  ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---

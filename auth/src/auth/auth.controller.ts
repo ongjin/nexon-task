@@ -48,10 +48,7 @@ export class AuthController {
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN)
     @Patch('users/:id/roles')
-    changeUserRoles(
-        @Param('id') id: string,
-        @Body() dto: ChangeRolesDto,
-    ) {
+    changeUserRoles(@Param('id') id: string, @Body() dto: ChangeRolesDto) {
         return this.usersService.updateRoles(id, dto.roles);
     }
 }

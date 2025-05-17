@@ -15,6 +15,7 @@ export class UsersService {
     }
 
     async create(email: string, password: string): Promise<UserDocument> {
+        // saltRounds는 env로 관리 나중에
         const hashed = await bcrypt.hash(password, 10);
         try {
             const created = new this.userModel({ email, password: hashed });

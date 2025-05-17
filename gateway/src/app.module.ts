@@ -8,6 +8,10 @@ import { AuthController } from './controllers/auth.controller';
 import { EventController } from './controllers/event.controller';
 import { APP_GUARD } from '@nestjs/core';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { RewardController } from './controllers/reward.controller';
+import { AdminRewardRequestController } from './controllers/admin-reward-request.controller';
+import { InventoryController } from './controllers/inventory.controller';
+import { RewardRequestController } from './controllers/reward-request.controller';
 
 @Module({
     imports: [
@@ -22,7 +26,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
         }),
         ProxyModule,
     ],
-    controllers: [AuthController, EventController],
+    controllers: [AuthController, EventController, RewardController, AdminRewardRequestController, InventoryController, RewardRequestController],
     providers: [
         JwtStrategy,
     ],

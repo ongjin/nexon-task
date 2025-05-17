@@ -1,6 +1,6 @@
 // src/auth/dto/change-roles.dto.ts
 import { IsArray, ArrayNotEmpty, IsString, IsEnum } from 'class-validator';
-import { Role } from '../role.enum';
+import { Role } from 'src/common/enums/role.enum';
 
 export class ChangeRolesDto {
     @IsArray()
