@@ -44,7 +44,7 @@ npm run start:dev
 npm run start
 
 # 임시 admin 토큰 발행 (admin@nexon.com 가입 후 진행)
-node -e "console.log(require('jsonwebtoken').sign({ sub: '계정_ID', email: 'admin@nexon.com', role: ['ADMIN'] }, 'jwt-secret'))"
+node -e "console.log(require('jsonwebtoken').sign({ sub: '계정_ID', email: 'admin@nexon.com', roles: ['ADMIN'] }, 'jwt-secret'))"
 ```
 
 - 기본 포트: `3001`
