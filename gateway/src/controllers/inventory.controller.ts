@@ -28,11 +28,7 @@ export class InventoryController {
 
     @Get(':userId')
     @Roles(Role.OPERATOR, Role.AUDITOR, Role.ADMIN)
-    findUserInventory(
-        @Req() req: Request,
-        @Res() res: Response,
-        @Param('userId') userId: string
-    ) {
+    findUserInventory(@Req() req: Request, @Res() res: Response, @Param('userId') userId: string) {
         return this.proxyService.forwardRequest(req, res, 'inventory');
     }
 }

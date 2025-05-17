@@ -13,13 +13,13 @@ export class RewardRequestController {
     constructor(private readonly proxyService: ProxyService) { }
 
     @Post()
-    @Roles(Role.OPERATOR, Role.ADMIN)
+    @Roles(Role.USER)
     create(@Req() req: Request, @Res() res: Response) {
         return this.proxyService.forwardRequest(req, res, 'reward-request');
     }
 
     @Get()
-    @Roles(Role.ADMIN, Role.OPERATOR, Role.AUDITOR)
+    @Roles(Role.USER)
     findAll(@Req() req: Request, @Res() res: Response) {
         return this.proxyService.forwardRequest(req, res, 'reward-request');
     }
