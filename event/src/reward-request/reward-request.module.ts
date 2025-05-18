@@ -3,8 +3,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { RewardRequestService } from './reward-request.service';
 import { RewardRequestController } from './reward-request.controller';
 import { RewardRequest, RewardRequestSchema } from './schemas/reward-request.schema';
-import { RewardModule } from 'src/reward/reward.module';
-import { InventoryModule } from 'src/inventory/inventory.module';
+import { RewardModule } from '../reward/reward.module';
+import { InventoryModule } from '../inventory/inventory.module';
 
 @Module({
   imports: [

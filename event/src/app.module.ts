@@ -10,7 +10,6 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { JwtStrategy } from './auth/jwt.strategy';
-import { RolesGuard } from './auth/roles.guard';
 
 @Module({
   imports: [

@@ -14,7 +14,7 @@ import { Roles } from '../auth/roles.decorator';
 import { RewardRequestService } from './reward-request.service';
 import { CreateRewardRequestDto } from './dto/create-reward-request.dto';
 import { UpdateRewardRequestStatusDto } from './dto/update-reward-request-status.dto';
-import { Role } from 'src/common/enums/role.enum';
+import { Role } from '../common/enums/role.enum';
 
 @Controller()
 @UseGuards(AuthGuard('jwt'), RolesGuard)

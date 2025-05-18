@@ -8,8 +8,8 @@ import {
 } from './schemas/reward-request.schema';
 import { CreateRewardRequestDto } from './dto/create-reward-request.dto';
 import { UpdateRewardRequestStatusDto } from './dto/update-reward-request-status.dto';
-import { RewardService } from 'src/reward/reward.service';
-import { InventoryService } from 'src/inventory/inventory.service';
+import { RewardService } from '../reward/reward.service';
+import { InventoryService } from '../inventory/inventory.service';
 
 @Injectable()
 export class RewardRequestService {
