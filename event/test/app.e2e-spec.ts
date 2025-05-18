@@ -5,6 +5,11 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { RolesGuard } from '../src/auth/roles.guard';
 
+// 고유값 생성을 위한 헬퍼 함수
+function generateRandom(): string {
+    return Math.random().toString(36).substr(2, 6);
+}
+
 /**
  * App E2E Tests
  * 이 테스트 스위트는 다음 모듈의 주요 엔드포인트를 검증합니다:
@@ -60,8 +65,9 @@ describe('App E2E Tests', () => {
      */
     describe('EventModule (이벤트 관리)', () => {
         it('POST /events - 이벤트 생성', async () => {
+            const random = generateRandom();
             const createDto = {
-                name: '테스트 이벤트',
+                name: '테스트 이벤트_' + random,
                 status: 'active',
                 startDate: new Date().toISOString(),
                 endDate: new Date(Date.now() + 3600000).toISOString(),
@@ -93,7 +99,7 @@ describe('App E2E Tests', () => {
         });
 
         it('PATCH /events/:id - 이벤트 수정', async () => {
-            const updateDto = { name: '수정된 테스트 이벤트' };
+            const updateDto = { name: '수정된 테스트 이벤트_' + generateRandom() };
             const res = await request(app.getHttpServer())
                 .patch(`/events/${eventId}`)
                 .send(updateDto)
@@ -113,8 +119,9 @@ describe('App E2E Tests', () => {
      */
     describe('RewardModule (보상 관리)', () => {
         beforeAll(async () => {
+            const random = generateRandom();
             const dto = {
-                name: '보상 이벤트',
+                name: '보상 이벤트_' + random,
                 status: 'active',
                 startDate: new Date().toISOString(),
                 endDate: new Date(Date.now() + 3600000).toISOString(),
@@ -225,8 +232,9 @@ describe('App E2E Tests', () => {
      * 4. InventoryModule 테스트
      */
     describe('InventoryModule (인벤토리 관리)', () => {
+
         it('POST /inventory - 아이템/포인트 수동 적립', async () => {
-            const itemDto = { userId: inventoryUserId, itemId: 'itemXYZ', quantity: 10, metadata: {} };
+            const itemDto = { userId: inventoryUserId, itemId: 'itemXYZ_' + generateRandom(), quantity: 10, metadata: {} };
             const res = await request(app.getHttpServer())
                 .post('/inventory')
                 .send(itemDto)
