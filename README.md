@@ -38,10 +38,8 @@ docker-compose up --build -d
 
 ## 아키텍쳐 및 ERD
 
-```
 ![아키텍쳐](./images/architecture.png)
 ![ERD](./images/ERD.png)
-```
 
 ---
 
