@@ -6,7 +6,7 @@ services:
         ports:
             - "27017:27017"
         volumes:
-            - ./mongo_data:/data/db
+            - mongo_data:/data/db
         container_name: mongodb
 
     gateway:
@@ -30,9 +30,6 @@ services:
             - "3001" # 내부용
         env_file:
             - ./auth/.env.docker
-        environment:
-            MONGODB_URI: mongodb://mongodb:27017/auth-db
-            JWT_SECRET: your_jwt_secret
         depends_on:
             - mongodb
         container_name: auth
@@ -45,8 +42,6 @@ services:
             - "3002" # 내부용
         env_file:
             - ./event/.env.docker
-        environment:
-            MONGODB_URI: mongodb://mongodb:27017/event-db
         depends_on:
             - mongodb
         container_name: event
