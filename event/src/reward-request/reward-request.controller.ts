@@ -1,4 +1,3 @@
-// src/reward-request/reward-request.controller.ts
 import {
     Controller,
     Post,

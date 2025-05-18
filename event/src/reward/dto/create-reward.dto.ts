@@ -1,4 +1,3 @@
-// src/reward/dto/create-reward.dto.ts
 import { IsString, IsEnum, IsNumber, IsMongoId, Min, IsObject, ValidateNested } from 'class-validator';
 import { RewardType } from '../schemas/reward.schema';
 import { Type } from 'class-transformer';

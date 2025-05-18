@@ -1,4 +1,3 @@
-// src/reward-request/reward-request.module.ts
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RewardRequestService } from './reward-request.service';

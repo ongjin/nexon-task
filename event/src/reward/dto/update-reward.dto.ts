@@ -1,4 +1,3 @@
-// src/reward/dto/update-reward.dto.ts
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateRewardDto } from './create-reward.dto';
 

@@ -7,7 +7,7 @@ import { RolesGuard } from './roles.guard';
 import { Roles } from './roles.decorator';
 import { ChangeRolesDto } from './dto/change-roles.dto';
 import { UsersService } from '../users/users.service';
-import { Role } from 'src/common/enums/role.enum';
+import { Role } from '../common/enums/role.enum';
 
 @Controller('auth')
 export class AuthController {

@@ -1,4 +1,3 @@
-// src/reward/reward.controller.ts
 import {
     Controller, Post, Get, Patch, Delete, Param, Req, Res, UseGuards
 } from '@nestjs/common';

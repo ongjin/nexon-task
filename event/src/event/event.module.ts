@@ -1,4 +1,3 @@
-// src/event/event.module.ts
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventService } from './event.service';

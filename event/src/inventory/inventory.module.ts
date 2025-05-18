@@ -1,4 +1,3 @@
-// src/inventory/inventory.module.ts
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { InventoryService } from './inventory.service';
