@@ -30,9 +30,25 @@ JWT_SECRET=jwtsecret
 JWT_EXPIRES_IN=3600s
 ```
 
-```
+```bash
+cd auth
+npm i
+cd ..
+cd event
+npm i
+cd ..
+cd gateway
+npm i
+cd ..
 docker-compose up --build -d
 ```
+
+---
+
+## 아키텍쳐 및 ERD
+
+![아키텍쳐](./images/architecture.png)
+![ERD](./images/ERD.png)
 
 ---
 
@@ -82,7 +98,3 @@ Docker Desktop 실행 중인지 확인
 ```
 
 ---
-
-```
-
-```
