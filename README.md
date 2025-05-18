@@ -36,6 +36,15 @@ docker-compose up --build -d
 
 ---
 
+## 아키텍쳐 및 ERD
+
+```
+![아키텍쳐](./images/architecture.png)
+![ERD](./images/ERD.png)
+```
+
+---
+
 ## 서비스별 문서 보기
 
 [Auth Service 문서 보기](auth/README.md)
@@ -82,7 +91,3 @@ Docker Desktop 실행 중인지 확인
 ```
 
 ---
-
-```
-
-```
