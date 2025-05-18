@@ -1,4 +1,3 @@
-// src/inventory/inventory.controller.ts
 import {
     Controller, Post, Get, Param, Req, Res, UseGuards
 } from '@nestjs/common';

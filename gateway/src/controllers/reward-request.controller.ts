@@ -1,4 +1,3 @@
-// src/reward-request/admin-reward-request.controller.ts (관리자용)
 import { Controller, Get, Param, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ProxyService } from '../proxy/proxy.service';
