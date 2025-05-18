@@ -30,7 +30,16 @@ JWT_SECRET=jwtsecret
 JWT_EXPIRES_IN=3600s
 ```
 
-```
+```bash
+cd auth
+npm i
+cd ..
+cd event
+npm i
+cd ..
+cd gateway
+npm i
+cd ..
 docker-compose up --build -d
 ```
 
